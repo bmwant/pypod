@@ -1,0 +1,30 @@
+[[package]]
+name = "pyaudio"
+version = "0.2.12"
+description = "Cross-platform audio I/O with PortAudio"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+test = ["numpy"]
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.7"
+content-hash = "4e993ff7afc12c72f31976787fc935d0966610e71a3ba58b0f3ac6553223f7fb"
+
+[metadata.files]
+pyaudio = [
+    {file = "PyAudio-0.2.12-cp310-cp310-win32.whl", hash = "sha256:71fc1688732fced907ae707d609cc3eead9fa05baf703bf08885f71a8fd9c658"},
+    {file = "PyAudio-0.2.12-cp310-cp310-win_amd64.whl", hash = "sha256:ffa235c220992e417e5a462f6d73ffb1be54b683005a1c6b185139580f59e234"},
+    {file = "PyAudio-0.2.12-cp311-cp311-win32.whl", hash = "sha256:5678725eb828742ea3febf381b1bd0bb94ba76c35e5e0daeab84e4c50f9f5d47"},
+    {file = "PyAudio-0.2.12-cp311-cp311-win_amd64.whl", hash = "sha256:19f654bd516154a655d9569d12d2a86ab5dfd58d039c0e4c6d1a26ec4ca02d89"},
+    {file = "PyAudio-0.2.12-cp37-cp37m-win32.whl", hash = "sha256:d89f065adc0058df90ec59aa6b35c1c036f17bb4323fb68b4267c12924e9553e"},
+    {file = "PyAudio-0.2.12-cp37-cp37m-win_amd64.whl", hash = "sha256:2f4206c6a8d2eeb2d1f054c69e3741c8634cfafe7887be4950a2f7d273700f8a"},
+    {file = "PyAudio-0.2.12-cp38-cp38-win32.whl", hash = "sha256:0f9debc6e47b6a5a4fe9da9d213d4bfe5e8096e68f0612f1b9097e3253eeea4d"},
+    {file = "PyAudio-0.2.12-cp38-cp38-win_amd64.whl", hash = "sha256:1c29930cf2e392d8b21a4c6253efe39d7400e37d61a7991756d3b00a46bf18ce"},
+    {file = "PyAudio-0.2.12-cp39-cp39-win32.whl", hash = "sha256:dafe891903402694a0fc87663bdb9b89e7fa66872446c5ef0c9d71ac4780cf1d"},
+    {file = "PyAudio-0.2.12-cp39-cp39-win_amd64.whl", hash = "sha256:880aff391a73ff5e94bae73e32d3b8e27e988a93afec2dd9c74dcd92c305f8cc"},
+    {file = "PyAudio-0.2.12.tar.gz", hash = "sha256:55ddf5db72bc537bba5f5dbca3ab9f0222ee5b842bda83978eab0b7b8f60fb9e"},
+]
