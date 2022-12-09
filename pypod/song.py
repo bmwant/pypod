@@ -1,4 +1,7 @@
-import wave
+import wave as pywave
+import contextlib
+
+import pyaudio
 
 class Song:
     def __init__(self, filepath):
@@ -24,17 +27,39 @@ class Song:
 
 
 class WAVSong(Song):
+
+    CHUNK = 1024
+
     def __init__(self, filepath):
         super().__init__(filepath=filepath)
         self._wave = None
-
+        self.py_audio = pyaudio.PyAudio()
 
     def __enter__(self):
-        self._wave = wave.open(self.filepath, "rb")
+        self._wave = pywave.open(self.filepath, "rb")
         return self
 
     def __exit__(self, *exc):
         self._wave.close()
+
+    def play(self):
+        with pywave.open(self.filepath, "rb") as wave:
+            format = self.py_audio.get_format_from_width(
+                wave.getsampwidth()
+            )
+            stream = self.py_audio.open(
+                format=format,
+                channels=wave.getnchannels(),
+                rate=wave.getframerate(),
+                output=True,
+            )
+            with contextlib.closing(stream):
+                while data := wave.readframes(self.CHUNK):
+                    # todo: report progress
+                    stream.write(data)
+                stream.stop_stream()
+            # at obj deletion?
+            self.py_audio.terminate()
 
     @property
     def duration(self):

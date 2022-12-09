@@ -9,7 +9,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.7"
 pyaudio = "^0.2.12"
+click = "^8.1.3"
+rich = "^12.6.0"
 
+[tool.poetry.scripts]
+pypod = 'pypod.cli:cli'
 
 [build-system]
 requires = ["poetry-core"]

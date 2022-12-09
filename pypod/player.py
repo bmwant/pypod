@@ -1,3 +1,6 @@
+from threading import Thread
+
+
 class Playlist:
     def __init__(self, name: str):
         self.name = name
@@ -19,7 +22,7 @@ class Pod:
     @staticmethod
     def generate_playlist(filepath):
         playlist = Playlist("Default playlist")
-        from song import WAVSong
+        from pypod.song import WAVSong
         s1 = WAVSong("./assets/rain_and_storm.wav")
         playlist.add_song(s1)
 
@@ -30,7 +33,11 @@ class Pod:
 
     def play(self):
         for s in self.playlist:
-            print(f"Playing {s} song")
+            t = Thread(target=s.play,)
+            t.start()
+            t.join()
+            break
+        print("Finished whole playlist")
 
 
 if __name__ == "__main__":
