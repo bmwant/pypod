@@ -16,6 +16,9 @@ textual = "^0.5.0"
 [tool.poetry.scripts]
 pypod = 'pypod.cli:cli'
 
+[tool.poetry.group.dev.dependencies]
+python-semantic-release = "^7.32.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
