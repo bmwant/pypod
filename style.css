@@ -1,0 +1,32 @@
+Controls {
+    layout: horizontal;
+    content-align: center middle;
+    background: $boost;
+    height: 5;
+    margin: 0;
+    min-width: 60;
+    padding: 1;
+}
+
+ProgressDisplay {
+    content-align: center middle;
+    text-opacity: 60%;
+    height: 5;
+}
+
+Button {
+    height: 100%;
+    margin: 0 1;
+}
+
+#prev {
+    width: 1fr;
+}
+
+#play {
+    width: 2fr;
+}
+
+#next {
+    width: 1fr;
+}
