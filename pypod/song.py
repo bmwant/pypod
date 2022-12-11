@@ -1,10 +1,11 @@
 import wave as pywave
 import contextlib
+from pathlib import Path
 
 import pyaudio
 
 class Song:
-    def __init__(self, filepath):
+    def __init__(self, filepath: Path):
         self.filepath = filepath
 
     def play(self):
@@ -30,7 +31,7 @@ class WAVSong(Song):
 
     CHUNK = 1024
 
-    def __init__(self, filepath):
+    def __init__(self, filepath: Path):
         super().__init__(filepath=filepath)
         self._wave = None
         self.py_audio = pyaudio.PyAudio()
@@ -43,7 +44,7 @@ class WAVSong(Song):
         self._wave.close()
 
     def play(self):
-        with pywave.open(self.filepath, "rb") as wave:
+        with pywave.open(str(self.filepath), "rb") as wave:
             format = self.py_audio.get_format_from_width(
                 wave.getsampwidth()
             )

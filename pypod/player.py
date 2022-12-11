@@ -1,4 +1,6 @@
 from threading import Thread
+from pathlib import Path
+from pypod.song import WAVSong
 
 
 class Playlist:
@@ -20,10 +22,13 @@ class Pod:
         self.playlist = None
 
     @staticmethod
-    def generate_playlist(filepath):
+    def generate_playlist(filepath: str | Path) -> Playlist:
+        filepath = Path(filepath)
+        if filepath.is_dir():
+            raise NotImplementedError("Can load only one file for now")
+        
         playlist = Playlist("Default playlist")
-        from pypod.song import WAVSong
-        s1 = WAVSong("./assets/rain_and_storm.wav")
+        s1 = WAVSong(filepath.absolute())
         playlist.add_song(s1)
 
         return playlist
@@ -35,13 +40,17 @@ class Pod:
         for s in self.playlist:
             t = Thread(target=s.play,)
             t.start()
-            t.join()
             break
         print("Finished whole playlist")
 
+    def __del__(self):
+        """Terminate running threads if any"""
+
 
 if __name__ == "__main__":
+    from pypod import config
+    filename = config.ASSETS_DIR / "rain_and_storm.wav"
     player = Pod()
-    playlist = player.generate_playlist("assets")
+    playlist = player.generate_playlist(filename)
     player.load(playlist)
     player.play()
