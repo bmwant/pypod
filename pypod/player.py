@@ -43,6 +43,15 @@ class Pod:
             break
         print("Finished whole playlist")
 
+    def pause(self):
+        pass
+
+    def next(self):
+        pass
+
+    def prev(self):
+        pass
+
     def __del__(self):
         """Terminate running threads if any"""
 
