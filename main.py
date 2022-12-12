@@ -1,43 +1,24 @@
-"""PyAudio Example: Play a wave file."""
+"""Testing features"""
+import time
+from threading import Thread
 
-import pyaudio
-import wave
-import sys
-import contextlib
+from pypod import config
+from pypod.song import WAVSong
 
-CHUNK = 1024
 
-if len(sys.argv) < 2:
-    print("Plays a wave file.\n\nUsage: %s filename.wav" % sys.argv[0])
-    sys.exit(-1)
+def main():
+    filepath = config.ASSETS_DIR / "rain_and_storm.wav"
+    s1 = WAVSong(filepath=filepath)
 
-wf = wave.open(sys.argv[1], 'rb')
+    t = Thread(target=s1.play,)
+    t.start()
+    time.sleep(2)
+    s1.paused = True
+    time.sleep(2)
+    s1.paused = False
+    time.sleep(3)
+    s1.paused = True
 
-# instantiate PyAudio (1)
-p = pyaudio.PyAudio()
 
-# open stream (2)
-stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-                channels=wf.getnchannels(),
-                rate=wf.getframerate(),
-                output=True)
-with contextlib.closing(stream):
-    # read data
-    # while data := wf.readframes(CHUNK):
-    #     stream.write(data)
-
-    data = wf.readframes(CHUNK)
-    # play stream (3)
-    while len(data):
-        stream.write(data)
-        data = wf.readframes(CHUNK)
-        # stream.stop_stream()
-        
-        # print(stream.get_time())
-        # stream.start_stream()
-
-    # stop stream (4)
-    stream.stop_stream()
-
-    # close PyAudio (5)
-    p.terminate()
+if __name__ == "__main__":
+    main()

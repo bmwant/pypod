@@ -1,12 +1,16 @@
+import time
 import wave as pywave
 import contextlib
 from pathlib import Path
 
 import pyaudio
 
+
+# TODO: make abstract class 
 class Song:
     def __init__(self, filepath: Path):
         self.filepath = filepath
+        self.paused = True
 
     def play(self):
         pass
@@ -33,15 +37,7 @@ class WAVSong(Song):
 
     def __init__(self, filepath: Path):
         super().__init__(filepath=filepath)
-        self._wave = None
         self.py_audio = pyaudio.PyAudio()
-
-    def __enter__(self):
-        self._wave = pywave.open(self.filepath, "rb")
-        return self
-
-    def __exit__(self, *exc):
-        self._wave.close()
 
     def play(self):
         with pywave.open(str(self.filepath), "rb") as wave:
@@ -54,13 +50,25 @@ class WAVSong(Song):
                 rate=wave.getframerate(),
                 output=True,
             )
+            self.paused = False
             with contextlib.closing(stream):
-                while data := wave.readframes(self.CHUNK):
-                    # todo: report progress
-                    stream.write(data)
+                while True:
+                    if self.paused:
+                        if stream.is_active():
+                            stream.stop_stream()
+                        time.sleep(0.01)
+                    else:
+                        if stream.is_stopped():
+                            stream.start_stream()
+                        data = wave.readframes(self.CHUNK)
+                        if not data:
+                            break
+                        stream.write(data)
                 stream.stop_stream()
-            # at obj deletion?
-            self.py_audio.terminate()
+            self.paused = True
+
+    def __del__(self):
+        self.py_audio.terminate()
 
     @property
     def duration(self):
@@ -70,8 +78,7 @@ class WAVSong(Song):
 
 
 if __name__ == "__main__":
-    s1 = Song("./assets/camera.wav")
-    s2 = Song("./assets/rain_and_storm.wav")
-    with s1, s2:
-        print(s1.duration)
-        print(s2.duration)
+    from pypod import config
+    filepath = config.ASSETS_DIR / "rain_and_storm.wav"
+    s1 = WAVSong(filepath=filepath)
+    s1.play()
