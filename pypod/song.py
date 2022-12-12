@@ -81,9 +81,10 @@ class WAVSong(Song):
         self.py_audio.terminate()
 
     @property
-    def duration(self):
-        frames = self._wave.getnframes()
-        rate = float(self._wave.getframerate())
+    def duration(self) -> float:
+        with pywave.open(str(self.filepath), "rb") as wave:
+            frames = wave.getnframes()
+            rate = float(wave.getframerate())
         return frames / rate
 
 

@@ -23,6 +23,7 @@ class Pod:
         self._current : Song = None
         self._thread = None
         self.playlist = None
+        self._list = None
 
     @staticmethod
     def generate_playlist(filepath: str | Path) -> Playlist:
@@ -33,11 +34,13 @@ class Pod:
         playlist = Playlist("Default playlist")
         s1 = WAVSong(filepath.absolute())
         playlist.add_song(s1)
+        playlist.add_song(s1)
 
         return playlist
 
     def load(self, playlist: Playlist):
-        self.playlist = cycle(playlist)
+        self.playlist = playlist
+        self._list = iter(self.playlist)
 
     def play_playlist(self):
         for song in self.playlist:
@@ -59,7 +62,7 @@ class Pod:
             return 
 
         # play from playlist section
-        song = next(self.playlist)
+        song = next(self._list)
         self._play_song(song)
         
     def _play_song(self, song):
@@ -92,7 +95,7 @@ class Pod:
     def next(self):
         if self.song is not None:
             self.song.stop()
-        song = next(self.playlist)
+        song = next(self._list)
         print(f"Playing next {song} {song.stopped} {song.paused}")
         self._play_song(song)
 
