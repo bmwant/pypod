@@ -11,12 +11,16 @@ class Song:
     def __init__(self, filepath: Path):
         self.filepath = filepath
         self.paused = True
+        self.stopped = True
 
     def play(self):
         pass
 
     def pause(self):
         self.paused = True
+
+    def stop(self):
+        self.stopped = True
 
     def duration(self):
         pass
@@ -54,8 +58,11 @@ class WAVSong(Song):
                 output=True,
             )
             self.paused = False
+            self.stopped = False
             with contextlib.closing(stream):
                 while True:
+                    if self.stopped:
+                        return
                     if self.paused:
                         if stream.is_active():
                             stream.stop_stream()

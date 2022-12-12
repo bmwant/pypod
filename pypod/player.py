@@ -1,6 +1,7 @@
 from threading import Thread
 from typing import Optional
 from pathlib import Path
+from itertools import cycle
 
 from pypod.song import Song, WAVSong
 
@@ -20,7 +21,7 @@ class Playlist:
 class Pod:
     def __init__(self):
         self._current : Song = None
-        self._lock = None
+        self._thread = None
         self.playlist = None
 
     @staticmethod
@@ -36,9 +37,9 @@ class Pod:
         return playlist
 
     def load(self, playlist: Playlist):
-        self.playlist = playlist
+        self.playlist = cycle(playlist)
 
-    def play(self):
+    def play_playlist(self):
         for song in self.playlist:
             t = Thread(target=song.play,)
             self._current = song
@@ -46,8 +47,33 @@ class Pod:
             break
         print("Finished whole playlist")
 
-    def terminate(self):
-        pass
+    def play(self):
+        if self.is_playing:
+            return
+
+        print("Unpausing current song")
+        # un-pause section
+        song = self.song
+        if song is not None and song.paused:
+            song.paused = False
+            return 
+
+        # play from playlist section
+        song = next(self.playlist)
+        self._play_song(song)
+        
+    def _play_song(self, song):
+        t = Thread(target=song.play,)
+        self._current = song
+        print(f"Start playing {song} song")
+        t.start()
+        self._thread = t
+
+    def exit(self):
+        if self.song is not None:
+            print("Stopping current song")
+            self.song.stop()
+            self._thread.join()
 
     @property
     def is_playing(self) -> bool:
@@ -60,16 +86,23 @@ class Pod:
 
     def pause(self):
         if self.is_playing:
+            print("Pausing current song")
             self.song.pause()
 
     def next(self):
-        pass
+        if self.song is not None:
+            self.song.stop()
+        song = next(self.playlist)
+        print(f"Playing next {song} {song.stopped} {song.paused}")
+        self._play_song(song)
 
     def prev(self):
-        pass
+        if self.song is not None:
+            self.song.stop()
 
     def __del__(self):
-        """Terminate running threads if any"""
+        """Cleanup"""
+        # TODO: save playlist/song state on exit?
 
 
 if __name__ == "__main__":

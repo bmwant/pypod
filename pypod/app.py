@@ -3,7 +3,10 @@ from textual.containers import Container
 from textual.widgets import Header as Header_
 from textual.widgets._header import HeaderTitle
 from textual.widgets import Button, Footer, Static, DataTable
-from textual.reactive import watch
+
+
+from pypod import config
+from pypod.player import Pod
 
 
 class ProgressDisplay(Static):
@@ -25,9 +28,9 @@ class Controls(Static):
         if button.id == "play":
             self.app.action_toggle_play()
         elif button.id == "prev":
-            print("play prev")
+            self.app.action_play_prev()
         elif button.id == "next":
-            print("play next")
+            self.app.action_play_next()
 
 
 class Header(Header_):
@@ -62,7 +65,7 @@ class PyPodApp(App):
         ("b", "play_prev", "back (previous)"),
     ]
 
-    def __init__(self, player, *args, **kwargs):
+    def __init__(self, player: Pod, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.player = player
 
@@ -95,17 +98,29 @@ class PyPodApp(App):
 
     def action_play_next(self):
         self.player.next()
+        self.query_one("#play").label = "▮▮"
 
-    def action_paly_prev(self):
+    def action_play_prev(self):
         self.player.prev()
+        self.query_one("#play").label = "▮▮"
+
+    async def action_quit(self):
+        """Quit the app with necessary cleanup."""
+        self.player.exit()
+        self.exit()
 
 
-if __name__ == "__main__":
-    from pypod import config
-    from pypod.player import Pod
+def create_app_debug():
     filename = config.ASSETS_DIR / "rain_and_storm.wav"
     player = Pod()
     playlist = player.generate_playlist(filename)
     player.load(playlist)
     app = PyPodApp(player=player)
+    return app
+
+
+app = create_app_debug()
+
+
+if __name__ == "__main__":
     app.run()
