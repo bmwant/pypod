@@ -1,6 +1,8 @@
 from threading import Thread
+from typing import Optional
 from pathlib import Path
-from pypod.song import WAVSong
+
+from pypod.song import Song, WAVSong
 
 
 class Playlist:
@@ -17,10 +19,9 @@ class Playlist:
 
 class Pod:
     def __init__(self):
-        self._current = None
+        self._current : Song = None
         self._lock = None
         self.playlist = None
-        self._is_playing = False
 
     @staticmethod
     def generate_playlist(filepath: str | Path) -> Playlist:
@@ -38,18 +39,28 @@ class Pod:
         self.playlist = playlist
 
     def play(self):
-        for s in self.playlist:
-            t = Thread(target=s.play,)
+        for song in self.playlist:
+            t = Thread(target=song.play,)
+            self._current = song
             t.start()
             break
         print("Finished whole playlist")
 
+    def terminate(self):
+        pass
+
     @property
-    def is_playing(self):
-        return self._is_playing
+    def is_playing(self) -> bool:
+        return self._current is not None and not self._current.paused
+
+    @property
+    def song(self) -> Optional[Song]:
+        """Return currently playing song"""
+        return self._current
 
     def pause(self):
-        pass
+        if self.is_playing:
+            self.song.pause()
 
     def next(self):
         pass

@@ -15,6 +15,9 @@ class Song:
     def play(self):
         pass
 
+    def pause(self):
+        self.paused = True
+
     def duration(self):
         pass
 

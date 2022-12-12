@@ -89,11 +89,9 @@ class PyPodApp(App):
         if self.player.is_playing:
             self.player.pause()
             self.query_one("#play").label = "▶"
-            self.player._is_playing = False
         else:
             self.player.play()
             self.query_one("#play").label = "pause"
-            self.player._is_playing = True
 
     def action_play_next(self):
         self.player.next()
