@@ -20,6 +20,7 @@ class Pod:
         self._current = None
         self._lock = None
         self.playlist = None
+        self._is_playing = False
 
     @staticmethod
     def generate_playlist(filepath: str | Path) -> Playlist:
@@ -42,6 +43,10 @@ class Pod:
             t.start()
             break
         print("Finished whole playlist")
+
+    @property
+    def is_playing(self):
+        return self._is_playing
 
     def pause(self):
         pass
