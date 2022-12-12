@@ -15,9 +15,9 @@ class Controls(Static):
 
     def compose(self) -> ComposeResult:
         """Create child widgets of a stopwatch."""
-        yield Button("previous", id="prev", variant="success")
-        yield Button("▶", id="play", variant="error")
-        yield Button("next", id="next")
+        yield Button("❮❮", id="prev", variant="success")
+        yield Button("▶", id="play", variant="warning")
+        yield Button("❯❯", id="next", variant="success")
 
     def on_button_pressed(self, event: Button.Pressed):
         """Event handler called when a button is pressed."""
