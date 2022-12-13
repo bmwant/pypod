@@ -33,8 +33,15 @@ class Playlist:
         self._index %= len(self.songs)
         return song
 
+    def get_next(self):
+        index = (self._index + 1) % len(self)
+        self._index = index
+        return self[index]
+
     def get_prev(self):
-        pass
+        index = (self._index - 1) % len(self)
+        self._index = index
+        return self[index]
 
     def __len__(self):
         return len(self.songs)
@@ -117,7 +124,7 @@ class Pod:
     def next(self):
         if self.song is not None:
             self.song.stop()
-        song = next(self.playlist)
+        song = self.playlist.get_next()
         self._play_song(song)
 
     def prev(self):
