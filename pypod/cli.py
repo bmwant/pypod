@@ -14,9 +14,8 @@ console = Console(highlight=False)
 @click.version_option(message="pypod, version %(version)s")
 @click.argument("filepath", metavar="path")
 def cli(filepath):
-    filename = config.ASSETS_DIR / "rain_and_storm.wav"
     player = Pod()
-    playlist = player.generate_playlist(filename)
+    playlist = player.generate_playlist(filepath)
     player.load(playlist)
     app = PyPodApp(player=player)
     app.run()

@@ -1,7 +1,6 @@
 from threading import Thread
 from typing import Optional
 from pathlib import Path
-from itertools import cycle
 
 from pypod.song import Song, WAVSong
 
@@ -10,12 +9,35 @@ class Playlist:
     def __init__(self, name: str):
         self.name = name
         self.songs = []
+        self._index = 0
 
     def add_song(self, song):
         self.songs.append(song)
 
+    @property
+    def position(self):
+        return self._index
+
+    def __getitem__(self, key):
+        return self.songs.__getitem__(key)
+
+    def __setitem__(self, key, value):
+        self.songs.__setitem__(key, value)
+
     def __iter__(self):
         return iter(self.songs)
+
+    def __next__(self):
+        song = self.songs[self._index]
+        self._index += 1
+        self._index %= len(self.songs)
+        return song
+
+    def get_prev(self):
+        pass
+
+    def __len__(self):
+        return len(self.songs)
 
 
 class Pod:
@@ -23,24 +45,24 @@ class Pod:
         self._current : Song = None
         self._thread = None
         self.playlist = None
-        self._list = None
 
     @staticmethod
     def generate_playlist(filepath: str | Path) -> Playlist:
         filepath = Path(filepath)
-        if filepath.is_dir():
-            raise NotImplementedError("Can load only one file for now")
-        
         playlist = Playlist("Default playlist")
-        s1 = WAVSong(filepath.absolute())
-        playlist.add_song(s1)
-        playlist.add_song(s1)
+
+        if filepath.is_dir():
+            for song_path in sorted(filepath.glob("**/*.wav")):
+                song = WAVSong(song_path.absolute())
+                playlist.add_song(song)
+        else:
+            song = WAVSong(filepath.absolute())
+            playlist.add_song(song)
 
         return playlist
 
     def load(self, playlist: Playlist):
         self.playlist = playlist
-        self._list = iter(self.playlist)
 
     def play_playlist(self):
         for song in self.playlist:
@@ -62,7 +84,7 @@ class Pod:
             return 
 
         # play from playlist section
-        song = next(self._list)
+        song = next(self.playlist)
         self._play_song(song)
         
     def _play_song(self, song):
@@ -95,23 +117,30 @@ class Pod:
     def next(self):
         if self.song is not None:
             self.song.stop()
-        song = next(self._list)
-        print(f"Playing next {song} {song.stopped} {song.paused}")
+        song = next(self.playlist)
         self._play_song(song)
 
     def prev(self):
         if self.song is not None:
             self.song.stop()
+        song = self.playlist.get_prev()
+        self._play_song(song)
 
     def __del__(self):
         """Cleanup"""
         # TODO: save playlist/song state on exit?
 
 
-if __name__ == "__main__":
+def play_file():
+    pass
+
+def play_directory():
     from pypod import config
-    filename = config.ASSETS_DIR / "rain_and_storm.wav"
     player = Pod()
-    playlist = player.generate_playlist(filename)
+    playlist = player.generate_playlist(config.ASSETS_DIR)
     player.load(playlist)
     player.play()
+
+
+if __name__ == "__main__":
+    play_directory()

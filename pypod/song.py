@@ -29,10 +29,10 @@ class Song:
         pass
 
     def name(self):
-        return "Song name"
+        return self.filepath.stem
 
     def __str__(self):
-        return "Song name"
+        return self.name()
 
     def __rich__(self):
         return "Song name with icon"
