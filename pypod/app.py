@@ -54,6 +54,22 @@ class Header(Header_):
         pass
 
 
+class PlaylistTable(Static):
+    def __init__(self, playlist, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.playlist = playlist
+
+    def on_mount(self):
+        table = self.query_one(DataTable)
+        table.add_columns("#", "Name", "Duration")
+        for i, s in enumerate(self.playlist, start=1):
+            duration = s.format_duration(s.duration)
+            table.add_row(f"{i}", f"{s}", f"{duration}")
+
+    def compose(self):
+        yield DataTable()
+
+
 class PyPodApp(App):
     """A Python terminal music player app."""
 
@@ -69,23 +85,22 @@ class PyPodApp(App):
         super().__init__(*args, **kwargs)
         self.player = player
 
-
     def on_mount(self):
-        table = self.query_one(DataTable)
         # ♫
         self.query_one(HeaderTitle).text = "🎵 PyPod"
-        table.add_columns("#", "Name", "Duration")
-        for i, s in enumerate(self.player.playlist, start=1):
-            duration = s.format_duration(s.duration)
-            table.add_row(f"{i}", f"{s}", f"{duration}")
+        
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
         yield Header()
+        table = PlaylistTable(
+            id="playlist",
+            playlist=self.player.playlist,
+        )
         yield Container(
             ProgressDisplay("progress bar ... playing"),
             Controls(), 
-            DataTable(id="playlist"),
+            table,
         )
 
         yield Footer()
