@@ -36,6 +36,12 @@ class Song:
 
     def __rich__(self):
         return "Song name with icon"
+    
+    @staticmethod
+    def format_duration(duration: float) -> str:
+        minutes = int(duration // 60)
+        seconds = int(duration % 60)
+        return f"{minutes:02d}:{seconds:02d}"
 
 
 class WAVSong(Song):

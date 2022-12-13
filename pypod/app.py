@@ -76,7 +76,8 @@ class PyPodApp(App):
         self.query_one(HeaderTitle).text = "🎵 PyPod"
         table.add_columns("#", "Name", "Duration")
         for i, s in enumerate(self.player.playlist, start=1):
-            table.add_row(f"{i}", f"{s}", f"{s.duration}")
+            duration = s.format_duration(s.duration)
+            table.add_row(f"{i}", f"{s}", f"{duration}")
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
