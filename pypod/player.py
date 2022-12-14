@@ -10,6 +10,7 @@ class Playlist:
         self.name = name
         self.songs = []
         self._index = 0
+        self._shifted = False
 
     def add_song(self, song):
         self.songs.append(song)
@@ -28,17 +29,21 @@ class Playlist:
         return iter(self.songs)
 
     def __next__(self):
-        song = self.songs[self._index]
-        self._index += 1
-        self._index %= len(self.songs)
-        return song
-
-    def get_next(self):
+        if not self._shifted:
+            self._shifted = True
+            return self[0]
         index = (self._index + 1) % len(self)
         self._index = index
-        return self[index]
+        return self.songs[self._index]
+
+    def get_next(self):
+        if not self._shifted:
+            self._shifted = True
+        return next(self)
 
     def get_prev(self):
+        if not self._shifted:
+            self._shifted = True
         index = (self._index - 1) % len(self)
         self._index = index
         return self[index]
