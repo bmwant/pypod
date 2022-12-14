@@ -450,7 +450,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "textual"
-version = "0.5.0"
+version = "0.6.0"
 description = "Modern Text User Interface framework"
 category = "main"
 optional = false
@@ -565,7 +565,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "3fdb085b6acbc91ea2d2b39aa11be7604a904fc31fc0e27ceae05652d112820b"
+content-hash = "cd6c8cb8ac6f32627c27b5e231d839fd04956f18b4172c98a1f4fb700d4a6c04"
 
 [metadata.files]
 bleach = [
@@ -816,8 +816,8 @@ smmap = [
     {file = "smmap-5.0.0.tar.gz", hash = "sha256:c840e62059cd3be204b0c9c9f74be2c09d5648eddd4580d9314c3ecde0b30936"},
 ]
 textual = [
-    {file = "textual-0.5.0-py3-none-any.whl", hash = "sha256:d1925f9f019858beaabda8a87cb87fb57cbbf321e948fc3b28d7085e83c8f5ab"},
-    {file = "textual-0.5.0.tar.gz", hash = "sha256:516bf4db05830e70f9806828610a1a00de08068d984d329dbecc8dbef5d71ab7"},
+    {file = "textual-0.6.0-py3-none-any.whl", hash = "sha256:08236279ed0b53d264f7ac61fd346cace7a49fcc1682ea4d195c3045ac0715bc"},
+    {file = "textual-0.6.0.tar.gz", hash = "sha256:32e901085aaf217290025c4d934c414ef7e203da7d334b80333240e9b867e771"},
 ]
 tomlkit = [
     {file = "tomlkit-0.11.6-py3-none-any.whl", hash = "sha256:07de26b0d8cfc18f871aec595fda24d95b08fef89d147caa861939f37230bf4b"},

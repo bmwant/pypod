@@ -2,7 +2,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import Header as Header_
 from textual.widgets._header import HeaderTitle
-from textual.widgets import Button, Footer, Static, DataTable
+from textual.widgets import Button, Footer, Static, DataTable, Label
 
 
 from pypod import config
@@ -61,13 +61,21 @@ class PlaylistTable(Static):
 
     def on_mount(self):
         table = self.query_one(DataTable)
+        table.on_click = self.on_click
         table.add_columns("#", "Name", "Duration")
         for i, s in enumerate(self.playlist, start=1):
             duration = s.format_duration(s.duration)
             table.add_row(f"{i}", f"{s}", f"{duration}")
 
     def compose(self):
-        yield DataTable()
+        table = DataTable(
+            zebra_stripes=True, 
+            show_cursor=False,
+        )
+        yield table
+
+    def on_click(self, *args, **kwargs):
+        print("Hanlding this", args, kwargs)
 
 
 class PyPodApp(App):
