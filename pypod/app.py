@@ -2,7 +2,8 @@ from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import Header as Header_
 from textual.widgets._header import HeaderTitle
-from textual.widgets import Button, Footer, Static, DataTable, Label
+from textual.widgets import Button, Footer, Static, DataTable
+from textual.reactive import reactive
 
 
 from pypod import config
@@ -89,6 +90,8 @@ class PyPodApp(App):
         ("b", "play_prev", "back (previous)"),
     ]
 
+    song_title = reactive("♫ not playing ♫")
+
     def __init__(self, player: Pod, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.player = player
@@ -96,7 +99,11 @@ class PyPodApp(App):
     def on_mount(self):
         # ♫
         self.query_one(HeaderTitle).text = "🎵 PyPod"
-        
+
+    def watch_song_title(self, title: str):
+        if not title.startswith("♫"):
+            title = f"♫ {title} ..."
+        self.query_one("#title").update(title)
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
@@ -106,7 +113,7 @@ class PyPodApp(App):
             playlist=self.player.playlist,
         )
         yield Container(
-            ProgressDisplay("progress bar ... playing"),
+            ProgressDisplay(id="title"),
             Controls(), 
             table,
         )
@@ -120,14 +127,17 @@ class PyPodApp(App):
         else:
             self.player.play()
             self.query_one("#play").label = "pause"
+        self.song_title = self.player.song.name
 
     def action_play_next(self):
         self.player.next()
         self.query_one("#play").label = "▮▮"
+        self.song_title = self.player.song.name
 
     def action_play_prev(self):
         self.player.prev()
         self.query_one("#play").label = "▮▮"
+        self.song_title = self.player.song.name
 
     async def action_quit(self):
         """Quit the app with necessary cleanup."""

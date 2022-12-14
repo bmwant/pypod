@@ -28,11 +28,12 @@ class Song:
     def progress(self):
         pass
 
+    @property
     def name(self):
         return self.filepath.stem
 
     def __str__(self):
-        return self.name()
+        return self.name
 
     def __rich__(self):
         return "Song name with icon"
