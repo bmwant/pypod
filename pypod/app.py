@@ -128,9 +128,8 @@ class PyPodApp(App):
 
 
 def create_app_debug():
-    filename = config.ASSETS_DIR / "rain_and_storm.wav"
     player = Pod()
-    playlist = player.generate_playlist(filename)
+    playlist = player.generate_playlist(config.ASSETS_DIR)
     player.load(playlist)
     app = PyPodApp(player=player)
     return app
