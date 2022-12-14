@@ -126,7 +126,7 @@ class PyPodApp(App):
             self.query_one("#play").label = "▶"
         else:
             self.player.play()
-            self.query_one("#play").label = "pause"
+            self.query_one("#play").label = "▮▮"
         self.song_title = self.player.song.name
 
     def action_play_next(self):
