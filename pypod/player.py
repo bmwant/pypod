@@ -143,9 +143,6 @@ class Pod:
         # TODO: save playlist/song state on exit?
 
 
-def play_file():
-    pass
-
 def play_directory():
     from pypod import config
     player = Pod()

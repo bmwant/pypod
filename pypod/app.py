@@ -8,10 +8,33 @@ from textual.reactive import reactive
 
 from pypod import config
 from pypod.player import Pod
+from rich.progress import Progress, TextColumn, BarColumn
 
 
 class ProgressDisplay(Static):
     """A widget to display song's progress."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.start_col = TextColumn("00:00")
+        self.end_col = TextColumn("03:24")
+        self.bar = BarColumn()
+        self.p = Progress(
+            self.start_col,
+            self.bar,
+            self.end_col,
+        )
+
+    def render(self):
+        # progress = Progress(
+        #     TextColumn("[bold blue]00:00", justify="right"),
+        #     BarColumn(bar_width=None),
+        #     TextColumn("[bold blue]just text", justify="right"),
+        # )
+        return self.p
+
+    def on_mount(self):
+        task = self.p.add_task("play", total=100)
+        self.p.update(task, completed=20)
 
 
 class Controls(Static):
