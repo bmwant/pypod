@@ -8,7 +8,8 @@ from textual.reactive import reactive
 
 
 from pypod import config
-from pypod.ui import ElapsedColumn, sec_to_time
+from pypod.song import Song
+from pypod.ui import ElapsedColumn, DurationColumn, sec_to_time
 from pypod.player import Pod
 
 
@@ -18,22 +19,17 @@ class ProgressDisplay(Static):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_col = ElapsedColumn("--:--")
-        self.end_col = TextColumn("--:--")
+        self.end_col = DurationColumn("--:--")
         self.bar = BarColumn()
         self.p = Progress(
             self.start_col,
             self.bar,
             self.end_col,
         )
-        self.task_id = self.p.add_task("play", total=10)
+        self.task_id = None
         self.timer = None
 
     def render(self):
-        # progress = Progress(
-        #     TextColumn("[bold blue]00:00", justify="right"),
-        #     BarColumn(bar_width=None),
-        #     TextColumn("[bold blue]just text", justify="right"),
-        # )
         return self.p
 
     def update_progress(self):
@@ -43,8 +39,29 @@ class ProgressDisplay(Static):
             self.p.advance(self.task_id)
         self.update()
 
-    def on_mount(self):
+    def pause(self):
+        """Action on song pause to stop progress bar updates"""
+
+    def resume(self):
+        """Action on song play to resume progress bar updates"""
+
+    def display_progress(self, song: Song):
+        self.reset()
+
+        self.task_id = self.p.add_task("play", total=int(song.duration))
         self.timer = self.set_interval(1, self.update_progress)
+        print(self._timers)
+        self.update()
+
+    def reset(self):
+        if self.task_id is not None:
+            self.p.remove_task(self.task_id)
+
+        # TODO: do we actually need this explicit tasks reset
+        self.p._tasks = {}
+        if self.timer is not None:
+            self.timer.stop_no_wait()
+            self._timers.discard(self.timer)
 
 
 
@@ -156,6 +173,7 @@ class PyPodApp(App):
         yield Footer()
 
     def action_toggle_play(self):
+        progress = self.query_one("#prog")
         if self.player.is_playing:
             self.player.pause()
             self.query_one("#play").label = "▶"
@@ -165,14 +183,18 @@ class PyPodApp(App):
         self.song_title = self.player.song.name
 
     def action_play_next(self):
+        progress : ProgressDisplay = self.query_one("#prog")
         self.player.next()
         self.query_one("#play").label = "▮▮"
         self.song_title = self.player.song.name
+        progress.display_progress(self.player.song)
 
     def action_play_prev(self):
+        progress : ProgressDisplay = self.query_one("#prog")
         self.player.prev()
         self.query_one("#play").label = "▮▮"
         self.song_title = self.player.song.name
+        progress.display_progress(self.player.song)
 
     async def action_quit(self):
         """Quit the app with necessary cleanup."""
