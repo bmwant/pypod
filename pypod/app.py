@@ -1,14 +1,15 @@
+from rich.progress import Progress, TextColumn, BarColumn
 from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import Header as Header_
 from textual.widgets._header import HeaderTitle
-from textual.widgets import Button, Footer, Static, DataTable
+from textual.widgets import Button, Footer, Static, DataTable, Label
 from textual.reactive import reactive
 
 
 from pypod import config
 from pypod.player import Pod
-from rich.progress import Progress, TextColumn, BarColumn
+
 
 
 class ProgressDisplay(Static):
@@ -136,7 +137,8 @@ class PyPodApp(App):
             playlist=self.player.playlist,
         )
         yield Container(
-            ProgressDisplay(id="title"),
+            Label(id="title"),
+            ProgressDisplay(id="prog"),
             Controls(), 
             table,
         )

@@ -8,10 +8,18 @@ Controls {
     padding: 1;
 }
 
-ProgressDisplay {
+Label#title {
     content-align: center middle;
     text-opacity: 60%;
-    height: 5;
+    width: 100%;
+    height: 3;
+    padding: 0 2;
+}
+
+ProgressDisplay {
+    content-align: center middle;
+    text-opacity: 80%;
+    height: 4;
 }
 
 Button {
@@ -39,8 +47,4 @@ ListView {
     width: 100%;
     height: auto;
     margin: 1 2;
-}
-
-Label {
-    padding: 0 2;
 }
