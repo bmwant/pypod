@@ -8,6 +8,7 @@ from textual.reactive import reactive
 
 
 from pypod import config
+from pypod.ui import ElapsedColumn, sec_to_time
 from pypod.player import Pod
 
 
@@ -16,14 +17,16 @@ class ProgressDisplay(Static):
     """A widget to display song's progress."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.start_col = TextColumn("00:00")
-        self.end_col = TextColumn("03:24")
+        self.start_col = ElapsedColumn("--:--")
+        self.end_col = TextColumn("--:--")
         self.bar = BarColumn()
         self.p = Progress(
             self.start_col,
             self.bar,
             self.end_col,
         )
+        self.task_id = self.p.add_task("play", total=10)
+        self.timer = None
 
     def render(self):
         # progress = Progress(
@@ -33,9 +36,16 @@ class ProgressDisplay(Static):
         # )
         return self.p
 
+    def update_progress(self):
+        if self.p.finished:
+            self.timer.stop_no_wait()
+        else:
+            self.p.advance(self.task_id)
+        self.update()
+
     def on_mount(self):
-        task = self.p.add_task("play", total=100)
-        self.p.update(task, completed=20)
+        self.timer = self.set_interval(1, self.update_progress)
+
 
 
 class Controls(Static):
@@ -89,7 +99,7 @@ class PlaylistTable(Static):
         table.on_click = self.on_click
         table.add_columns("#", "Name", "Duration")
         for i, s in enumerate(self.playlist, start=1):
-            duration = s.format_duration(s.duration)
+            duration = sec_to_time(s.duration)
             table.add_row(f"{i}", f"{s}", f"{duration}")
 
     def compose(self):

@@ -1,3 +1,4 @@
+from rich.progress import Text, Task, TextColumn
 from textual.widgets import ListView, ListItem, Static, Label
 
 
@@ -22,3 +23,21 @@ class PlaylistListView(Static):
             ListItem(Label("Second to last one")),
             ListItem(Label("Last one")),
         )
+
+class ElapsedColumn(TextColumn):
+    def render(self, task: Task) -> Text:
+        return sec_to_time(task.completed)
+
+
+class LeftColumn(TextColumn):
+    pass
+
+class DurationColumn(TextColumn):
+    def render(self, task: Task) -> Text:
+        return sec_to_time(task.total)
+
+
+def sec_to_time(duration: float | int) -> str:        
+    minutes = int(duration // 60)
+    seconds = int(duration % 60)
+    return f"{minutes:02d}:{seconds:02d}"
