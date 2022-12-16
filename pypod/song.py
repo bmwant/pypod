@@ -5,15 +5,13 @@ from pathlib import Path
 
 import pyaudio
 
-from pypod.ui import sec_to_time
-
 
 # TODO: make abstract class 
 class Song:
     def __init__(self, filepath: Path):
-        self.filepath = filepath
-        self.paused = True
-        self.stopped = True
+        self.filepath: Path = filepath
+        self.paused: bool = True
+        self.stopped: bool = True
 
     def play(self):
         pass

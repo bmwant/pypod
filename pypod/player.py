@@ -1,4 +1,5 @@
-from threading import Thread
+from threading import Thread, Event
+# from asyncio import Event
 from typing import Optional
 from pathlib import Path
 
@@ -57,6 +58,7 @@ class Pod:
         self._current : Song = None
         self._thread = None
         self.playlist = None
+        self.auto_finish : Event = Event() 
 
     @staticmethod
     def generate_playlist(filepath: str | Path) -> Playlist:
@@ -99,10 +101,17 @@ class Pod:
         song = next(self.playlist)
         self._play_song(song)
         
+    def _play_wrap(self, song: Song):
+        song.play()
+        if not song.stopped:
+            self.auto_finish.set()
+
     def _play_song(self, song):
-        t = Thread(target=song.play,)
+        t = Thread(target=self._play_wrap, args=(song,))
+        # t = Thread(target=song.play,)
         self._current = song
         print(f"Start playing {song} song")
+        self.auto_finish.clear()
         t.start()
         self._thread = t
 

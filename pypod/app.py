@@ -1,4 +1,3 @@
-from rich.progress import Progress, TextColumn, BarColumn
 from textual.app import App, ComposeResult
 from textual.containers import Container
 from textual.widgets import Header as Header_
@@ -8,67 +7,9 @@ from textual.reactive import reactive
 
 
 from pypod import config
-from pypod.song import Song
-from pypod.ui import ElapsedColumn, DurationColumn, sec_to_time
+from pypod.ui import ProgressDisplay
+from pypod.utils import sec_to_time
 from pypod.player import Pod
-
-
-
-class ProgressDisplay(Static):
-    """A widget to display song's progress."""
-
-    INTERVAL = 0.1
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.start_col = ElapsedColumn("--:--")
-        self.end_col = DurationColumn("--:--")
-        self.bar = BarColumn()
-        self.p = Progress(
-            self.start_col,
-            self.bar,
-            self.end_col,
-        )
-        self.task_id = None
-        self.timer = None
-
-    def render(self):
-        return self.p
-
-    def update_progress(self):
-        # TODO: this should pick actual progress of the song
-        if self.p.finished:
-            self.timer.stop_no_wait()
-        else:
-            self.p.advance(self.task_id, advance=self.INTERVAL)
-        self.update()
-
-    def pause(self):
-        """Action on song pause to stop progress bar updates"""
-        self.timer.pause()
-
-    def resume(self):
-        """Action on song play to resume progress bar updates"""
-        self.timer.resume()
-
-    def display_progress(self, song: Song):
-        self.reset()
-
-        self.task_id = self.p.add_task("play", total=int(song.duration))
-        self.timer = self.set_interval(self.INTERVAL, self.update_progress)
-        print(self._timers)
-        self.update()
-
-    def reset(self):
-        if self.task_id is not None:
-            self.p.remove_task(self.task_id)
-
-        # TODO: do we actually need this explicit tasks reset
-        self.p._tasks = {}
-        if self.timer is not None:
-            self.timer.stop_no_wait()
-            self._timers.discard(self.timer)
-
 
 
 class Controls(Static):
@@ -119,7 +60,6 @@ class PlaylistTable(Static):
 
     def on_mount(self):
         table = self.query_one(DataTable)
-        table.on_click = self.on_click
         table.add_columns("#", "Name", "Duration")
         for i, s in enumerate(self.playlist, start=1):
             duration = sec_to_time(s.duration)
@@ -131,9 +71,6 @@ class PlaylistTable(Static):
             show_cursor=False,
         )
         yield table
-
-    def on_click(self, *args, **kwargs):
-        print("Hanlding this", args, kwargs)
 
 
 class PyPodApp(App):
@@ -156,11 +93,17 @@ class PyPodApp(App):
     def on_mount(self):
         # ♫
         self.query_one(HeaderTitle).text = "🎵 PyPod"
+        self.set_interval(0.5, self.change_song)
 
     def watch_song_title(self, title: str):
         if not title.startswith("♫"):
             title = f"♫ {title} ..."
         self.query_one("#title").update(title)
+
+    def change_song(self):
+        # TODO: check the end of playlist
+        if self.player.auto_finish.is_set():
+            self.action_play_next()
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
@@ -186,8 +129,11 @@ class PyPodApp(App):
             self.query_one("#play").label = "▶"
         else:
             self.player.play()
-            progress.resume()
             self.query_one("#play").label = "▮▮"
+            if progress.timer is None:
+                progress.display_progress(self.player.song)
+            else:
+                progress.resume()
         self.song_title = self.player.song.name
 
     def action_play_next(self):

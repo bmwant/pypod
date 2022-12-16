@@ -1,5 +1,8 @@
-from rich.progress import Text, Task, TextColumn
+from rich.progress import Progress, Text, Task, TextColumn, BarColumn
 from textual.widgets import ListView, ListItem, Static, Label
+
+from pypod.song import Song
+from pypod.utils import sec_to_time
 
 
 class PlaylistListView(Static):
@@ -37,7 +40,58 @@ class DurationColumn(TextColumn):
         return sec_to_time(task.total)
 
 
-def sec_to_time(duration: float | int) -> str:        
-    minutes = int(duration // 60)
-    seconds = int(duration % 60)
-    return f"{minutes:02d}:{seconds:02d}"
+class ProgressDisplay(Static):
+    """A widget to display song's progress."""
+
+    INTERVAL = 0.1
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.start_col = ElapsedColumn("--:--")
+        self.end_col = DurationColumn("--:--")
+        self.bar = BarColumn()
+        self.p = Progress(
+            self.start_col,
+            self.bar,
+            self.end_col,
+        )
+        self.task_id = None
+        self.timer = None
+
+    def render(self):
+        return self.p
+
+    def update_progress(self):
+        # TODO: this should pick actual progress of the song
+        if self.p.finished:
+            self.timer.stop_no_wait()
+        else:
+            self.p.advance(self.task_id, advance=self.INTERVAL)
+        self.update()
+
+    def pause(self):
+        """Action on song pause to stop progress bar updates"""
+        self.timer.pause()
+
+    def resume(self):
+        """Action on song play to resume progress bar updates"""
+        self.timer.resume()
+
+    def display_progress(self, song: Song):
+        self.reset()
+
+        self.task_id = self.p.add_task("play", total=int(song.duration))
+        self.timer = self.set_interval(self.INTERVAL, self.update_progress)
+        self.update()
+
+    def reset(self):
+        if self.task_id is not None:
+            self.p.remove_task(self.task_id)
+
+        # TODO: do we actually need this explicit tasks reset
+        self.p._tasks = {}
+        if self.timer is not None:
+            self.timer.stop_no_wait()
+            self._timers.discard(self.timer)
+
+
