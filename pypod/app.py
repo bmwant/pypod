@@ -16,6 +16,9 @@ from pypod.player import Pod
 
 class ProgressDisplay(Static):
     """A widget to display song's progress."""
+
+    INTERVAL = 0.1
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_col = ElapsedColumn("--:--")
@@ -33,23 +36,26 @@ class ProgressDisplay(Static):
         return self.p
 
     def update_progress(self):
+        # TODO: this should pick actual progress of the song
         if self.p.finished:
             self.timer.stop_no_wait()
         else:
-            self.p.advance(self.task_id)
+            self.p.advance(self.task_id, advance=self.INTERVAL)
         self.update()
 
     def pause(self):
         """Action on song pause to stop progress bar updates"""
+        self.timer.pause()
 
     def resume(self):
         """Action on song play to resume progress bar updates"""
+        self.timer.resume()
 
     def display_progress(self, song: Song):
         self.reset()
 
         self.task_id = self.p.add_task("play", total=int(song.duration))
-        self.timer = self.set_interval(1, self.update_progress)
+        self.timer = self.set_interval(self.INTERVAL, self.update_progress)
         print(self._timers)
         self.update()
 
@@ -173,12 +179,14 @@ class PyPodApp(App):
         yield Footer()
 
     def action_toggle_play(self):
-        progress = self.query_one("#prog")
+        progress : ProgressDisplay = self.query_one("#prog")
         if self.player.is_playing:
+            progress.pause()
             self.player.pause()
             self.query_one("#play").label = "▶"
         else:
             self.player.play()
+            progress.resume()
             self.query_one("#play").label = "▮▮"
         self.song_title = self.player.song.name
 
