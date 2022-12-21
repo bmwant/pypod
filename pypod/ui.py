@@ -28,7 +28,12 @@ class PlaylistListView(Static):
         )
 
 class ElapsedColumn(TextColumn):
+    def __init__(self, *args, **kwargs):
+        return super().__init__("", *args, **kwargs)
+
     def render(self, task: Task) -> Text:
+        if task.description == "dummy":
+            return "--:--"
         return sec_to_time(task.completed)
 
 
@@ -36,7 +41,12 @@ class LeftColumn(TextColumn):
     pass
 
 class DurationColumn(TextColumn):
+    def __init__(self, *args, **kwargs):
+        return super().__init__("", *args, **kwargs)
+
     def render(self, task: Task) -> Text:
+        if task.description == "dummy":
+            return "--:--"
         return sec_to_time(task.total)
 
 
@@ -47,15 +57,15 @@ class ProgressDisplay(Static):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.start_col = ElapsedColumn("--:--")
-        self.end_col = DurationColumn("--:--")
+        self.start_col = ElapsedColumn()
+        self.end_col = DurationColumn()
         self.bar = BarColumn()
         self.p = Progress(
             self.start_col,
             self.bar,
             self.end_col,
         )
-        self.task_id = None
+        self.task_id = self.p.add_task("dummy")
         self.timer = None
 
     def render(self):
