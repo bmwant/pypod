@@ -103,5 +103,3 @@ class ProgressDisplay(Static):
         if self.timer is not None:
             self.timer.stop_no_wait()
             self._timers.discard(self.timer)
-
-
