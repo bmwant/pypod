@@ -1,6 +1,5 @@
-from rich.panel import Panel
 from rich.progress import Progress, Text, Task, TextColumn, BarColumn
-from textual.widgets import ListView, ListItem, Static, Label
+from textual.widgets import ListView, ListItem, Static, Label, DataTable
 
 from pypod.song import Song
 from pypod.utils import sec_to_time
@@ -10,23 +9,41 @@ class PlaylistListView(Static):
     def __init__(self, playlist, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.playlist = playlist
+        self._list = ListView()
 
     def on_mount(self):
-        pass
+        # table.add_columns("#", "Name", "Duration")
+        for i, s in enumerate(self.playlist, start=1):
+            duration = sec_to_time(s.duration)
+            text = f"{i}  {s}  {duration}"
+            self._list.append(ListItem(Label(text)))
 
     def compose(self):
-        yield ListView(
-            ListItem(Label("One"), Label("try")),
-            ListItem(Label("Two")),
-            ListItem(Label("Three")),
-            ListItem(Label("Four")),
-            ListItem(Label("Five")),
-            ListItem(Label("Six")),
-            ListItem(Label("Seven")),
-            ListItem(Label("Eight")),
-            ListItem(Label("Second to last one")),
-            ListItem(Label("Last one")),
-        )
+        yield self._list
+
+
+class PlaylistTable(Static):
+    def __init__(self, playlist, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.playlist = playlist
+        self.table = DataTable()
+        self.panel = self._panel()
+
+    def on_mount(self):
+        # table = self.query_one(DataTable)
+        table = self.table
+        table.add_columns("#", "Name", "Duration")
+        for i, s in enumerate(self.playlist, start=1):
+            duration = sec_to_time(s.duration)
+            table.add_row(f"{i}", f"{s}", f"{duration}")
+
+
+    # def render(self):
+    #     return self.panel
+
+    def compose(self):
+        yield self.panel
+
 
 class ElapsedColumn(TextColumn):
     def __init__(self, *args, **kwargs):
