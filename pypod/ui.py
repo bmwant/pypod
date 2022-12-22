@@ -1,3 +1,4 @@
+from rich.panel import Panel
 from rich.progress import Progress, Text, Task, TextColumn, BarColumn
 from textual.widgets import ListView, ListItem, Static, Label
 
@@ -15,7 +16,7 @@ class PlaylistListView(Static):
 
     def compose(self):
         yield ListView(
-            ListItem(Label("One")),
+            ListItem(Label("One"), Label("try")),
             ListItem(Label("Two")),
             ListItem(Label("Three")),
             ListItem(Label("Four")),
@@ -39,6 +40,7 @@ class ElapsedColumn(TextColumn):
 
 class LeftColumn(TextColumn):
     pass
+
 
 class DurationColumn(TextColumn):
     def __init__(self, *args, **kwargs):

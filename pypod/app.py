@@ -4,10 +4,10 @@ from textual.widgets import Header as Header_
 from textual.widgets._header import HeaderTitle
 from textual.widgets import Button, Footer, Static, DataTable, Label
 from textual.reactive import reactive
-
+from rich.panel import Panel
 
 from pypod import config
-from pypod.ui import ProgressDisplay
+from pypod.ui import ProgressDisplay, PlaylistListView
 from pypod.utils import sec_to_time
 from pypod.player import Pod
 
@@ -57,20 +57,30 @@ class PlaylistTable(Static):
     def __init__(self, playlist, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.playlist = playlist
+        self.table = DataTable()
+        self.panel = self._panel()
 
     def on_mount(self):
-        table = self.query_one(DataTable)
+        # table = self.query_one(DataTable)
+        table = self.table
         table.add_columns("#", "Name", "Duration")
         for i, s in enumerate(self.playlist, start=1):
             duration = sec_to_time(s.duration)
             table.add_row(f"{i}", f"{s}", f"{duration}")
 
+    def _panel(self):
+        # self.table = DataTable(
+        #     zebra_stripes=True,
+        #     show_cursor=False,
+        # )
+        panel = Panel(self.table)
+        return panel
+
+    # def render(self):
+    #     return self.panel
+
     def compose(self):
-        table = DataTable(
-            zebra_stripes=True, 
-            show_cursor=False,
-        )
-        yield table
+        yield self.panel
 
 
 class PyPodApp(App):
@@ -108,14 +118,18 @@ class PyPodApp(App):
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
         yield Header()
-        table = PlaylistTable(
+        # table = PlaylistTable(
+        #     id="playlist",
+        #     playlist=self.player.playlist,
+        # )
+        table = PlaylistListView(
             id="playlist",
             playlist=self.player.playlist,
         )
         yield Container(
             Label(id="title"),
             ProgressDisplay(id="prog"),
-            Controls(), 
+            Controls(),
             table,
         )
 

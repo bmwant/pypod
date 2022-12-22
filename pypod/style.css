@@ -40,11 +40,15 @@ Button {
 }
 
 #playlist {
-    height: 10;
+    height: 15;
 }
 
 ListView {
-    width: 100%;
-    height: auto;
-    margin: 1 2;
+  width: 100%;
+  height: auto;
+  margin: 1 2;
+}
+
+ListItem {
+  layout: horizontal;
 }

@@ -1,5 +1,4 @@
 from threading import Thread, Event
-# from asyncio import Event
 from typing import Optional
 from pathlib import Path
 
@@ -55,10 +54,10 @@ class Playlist:
 
 class Pod:
     def __init__(self):
-        self._current : Song = None
-        self._thread = None
-        self.playlist = None
-        self.auto_finish : Event = Event() 
+        self._current: Song = None
+        self._thread: Thread= None
+        self.playlist: Playlist = None
+        self.auto_finish: Event = Event()
 
     @staticmethod
     def generate_playlist(filepath: str | Path) -> Playlist:
@@ -95,12 +94,12 @@ class Pod:
         song = self.song
         if song is not None and song.paused:
             song.paused = False
-            return 
+            return
 
         # play from playlist section
         song = next(self.playlist)
         self._play_song(song)
-        
+
     def _play_wrap(self, song: Song):
         song.play()
         if not song.stopped:
