@@ -1,18 +1,19 @@
 import time
 import wave as pywave
 import contextlib
+from abc import ABC, abstractmethod
 from pathlib import Path
 
 import pyaudio
 
 
-# TODO: make abstract class 
-class Song:
+class Song(ABC):
     def __init__(self, filepath: Path):
         self.filepath: Path = filepath
         self.paused: bool = True
         self.stopped: bool = True
 
+    @abstractmethod
     def play(self):
         pass
 
@@ -22,6 +23,8 @@ class Song:
     def stop(self):
         self.stopped = True
 
+    @property
+    @abstractmethod
     def duration(self):
         pass
 
