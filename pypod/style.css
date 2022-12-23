@@ -56,3 +56,12 @@ ListItem {
 ListItem Label {
   margin: 1 2;
 }
+
+.right {
+  dock: right;
+}
+
+.song-name {
+  width: 40;
+  padding: 0 2;
+}

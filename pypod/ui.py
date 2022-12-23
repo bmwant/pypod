@@ -12,11 +12,16 @@ class PlaylistListView(Static):
         self._list = ListView()
 
     def on_mount(self):
-        # table.add_columns("#", "Name", "Duration")
+        # TODO: add header somehow
         for i, s in enumerate(self.playlist, start=1):
             duration = sec_to_time(s.duration)
-            text = f"{i}  {s}  {duration}"
-            self._list.append(ListItem(Label(text)))
+            self._list.append(
+                ListItem(
+                    Label(f"{i}"),
+                    Label(f"{s}", classes="song-name"),
+                    Label(f"{duration}", classes="right"),
+                )
+            )
 
     def compose(self):
         yield self._list
