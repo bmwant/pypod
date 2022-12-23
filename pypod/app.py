@@ -40,6 +40,8 @@ class PyPodApp(App):
         if not title.startswith("♫"):
             title = f"♫ {title} ..."
         self.query_one("#title").update(title)
+        song_index = self.player.playlist.position
+        self.query_one("#playlist").set_index(song_index)
 
     def change_song(self):
         # TODO: check the end of playlist

@@ -68,6 +68,9 @@ class PlaylistListView(Static):
                 )
             )
 
+    def set_index(self, highlight: int = 0):
+        self._list.index = highlight
+
     def compose(self):
         yield self._list
 
