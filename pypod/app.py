@@ -63,7 +63,7 @@ class PyPodApp(App):
         yield Footer()
 
     def action_toggle_play(self):
-        progress : ProgressDisplay = self.query_one("#prog")
+        progress: ProgressDisplay = self.query_one("#prog")
         if self.player.is_playing:
             progress.pause()
             self.player.pause()
@@ -78,14 +78,14 @@ class PyPodApp(App):
         self.song_title = self.player.song.name
 
     def action_play_next(self):
-        progress : ProgressDisplay = self.query_one("#prog")
+        progress: ProgressDisplay = self.query_one("#prog")
         self.player.next()
         self.query_one("#play").label = "▮▮"
         self.song_title = self.player.song.name
         progress.display_progress(self.player.song)
 
     def action_play_prev(self):
-        progress : ProgressDisplay = self.query_one("#prog")
+        progress: ProgressDisplay = self.query_one("#prog")
         self.player.prev()
         self.query_one("#play").label = "▮▮"
         self.song_title = self.player.song.name
