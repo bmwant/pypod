@@ -1,8 +1,53 @@
 from rich.progress import Progress, Text, Task, TextColumn, BarColumn
+from textual.app import ComposeResult
+from textual.widgets._header import HeaderTitle
 from textual.widgets import ListView, ListItem, Static, Label, DataTable
+from textual.widgets import Header as Header_
+from textual.widgets import Button, Static
 
 from pypod.song import Song
 from pypod.utils import sec_to_time
+
+
+class Controls(Static):
+    """A buttons widget to control playback."""
+
+    def compose(self) -> ComposeResult:
+        """Create child widgets of a stopwatch."""
+        yield Button("❮❮", id="prev", variant="success")
+        yield Button("▶", id="play", variant="warning")
+        yield Button("❯❯", id="next", variant="success")
+
+    def on_button_pressed(self, event: Button.Pressed):
+        """Event handler called when a button is pressed."""
+        button = event.button
+        if button.id == "play":
+            self.app.action_toggle_play()
+        elif button.id == "prev":
+            self.app.action_play_prev()
+        elif button.id == "next":
+            self.app.action_play_next()
+
+
+class Header(Header_):
+    DEFAULT_CSS = """
+    Header {
+        dock: top;
+        width: 100%;
+        background: $secondary-background;
+        color: $text;
+        height: 1;
+    }
+    Header.-tall {
+        height: 1;
+    }
+    """
+
+    def compose(self):
+        yield HeaderTitle()
+
+    def on_click(self):
+        pass
 
 
 class PlaylistListView(Static):
