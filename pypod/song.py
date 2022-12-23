@@ -39,7 +39,7 @@ class Song(ABC):
         return self.name
 
     def __rich__(self):
-        return "Song name with icon"
+        return f"♫ {self.name}"
 
 
 class WAVSong(Song):

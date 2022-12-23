@@ -32,7 +32,6 @@ class PlaylistTable(Static):
         super().__init__(*args, **kwargs)
         self.playlist = playlist
         self.table = DataTable()
-        self.panel = self._panel()
 
     def on_mount(self):
         # table = self.query_one(DataTable)
@@ -42,12 +41,8 @@ class PlaylistTable(Static):
             duration = sec_to_time(s.duration)
             table.add_row(f"{i}", f"{s}", f"{duration}")
 
-
-    # def render(self):
-    #     return self.panel
-
     def compose(self):
-        yield self.panel
+        yield self.table
 
 
 class ElapsedColumn(TextColumn):
