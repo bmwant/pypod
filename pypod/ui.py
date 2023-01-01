@@ -1,8 +1,12 @@
+import time
+from datetime import timedelta
+
 from rich.progress import Progress, Text, Task, TextColumn, BarColumn
 from textual import events
 from textual.app import ComposeResult
 from textual.widgets._header import HeaderTitle
-from textual.widgets import ListView, ListItem, Static, Label, DataTable
+from textual.widgets import ListItem as ListItem_
+from textual.widgets import ListView, Static, Label, DataTable
 from textual.widgets import Header as Header_
 from textual.widgets import Button, Static
 
@@ -51,27 +55,66 @@ class Header(Header_):
         pass
 
 
+class ClickListItem(ListItem_):
+
+    DOUBLE_CLICK_DELAY = 1  # in seconds
+
+    def __init__(self, *args, **kwargs):
+        self._last_clicked = time.monotonic()
+        self._double = False
+        super().__init__(*args, **kwargs)
+
+    # def on_click(self, event: events.Click) -> None:
+    #     event_time = time.monotonic()
+    #     if event_time - self._last_clicked < self.DOUBLE_CLICK_DELAY:
+    #         self._last_clicked = 0
+    #         self._double = True
+    #     else:
+    #         # print("Just a single click", event_time, self._last_clicked)
+    #         self._last_clicked = event_time
+    #         self._double = False
+    #     self.emit_no_wait(self._ChildClicked(self))
+
+    @property
+    def double_click(self):
+        return self._double
+
+
 class PlaylistListView(Static):
     def __init__(self, playlist, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.playlist = playlist
         self._list = ListView()
+        # self._list.on_event = self._on_list_events
+
+    def on_list_view_selected(
+        self, event: ListView.Selected
+    ) -> None:
+        index = self._list.index
+        print("Selected index is", index)
+        self.app.play_index(index)
+        # event.stop()
+
+    async def _on_list_events(self, event: events.Event):
+        double_click = getattr(self._list.highlighted_child, "double_click", None)
+        print("Event type", type(event), dir(event))
+        if isinstance(event, ListView.Selected):
+            index = self._list.index
+            print("Playing on double click", index)
+            self.app.play_index(index)
+        await ListView.on_event(self._list, event)
 
     def on_mount(self):
         # TODO: add header somehow
         for i, s in enumerate(self.playlist, start=1):
             duration = sec_to_time(s.duration)
             self._list.append(
-                ListItem(
+                ClickListItem(
                     Label(f"{i}"),
                     Label(f"{s}", classes="song-name"),
                     Label(f"{duration}", classes="right"),
                 )
             )
-
-    def on_click(self, event: events.Click):
-        print("We are on click")
-        return super()._on_click(event)
 
     def set_index(self, highlight: int = 0):
         self._list.index = highlight
@@ -175,3 +218,6 @@ class ProgressDisplay(Static):
         if self.timer is not None:
             self.timer.stop_no_wait()
             self._timers.discard(self.timer)
+
+
+

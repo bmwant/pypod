@@ -19,8 +19,9 @@ class Playlist:
     def position(self):
         return self._index
 
-    def __getitem__(self, key):
-        return self.songs.__getitem__(key)
+    def __getitem__(self, index):
+        self._index = index
+        return self.songs.__getitem__(index)
 
     def __setitem__(self, key, value):
         self.songs.__setitem__(key, value)
@@ -133,6 +134,12 @@ class Pod:
         if self.is_playing:
             print("Pausing current song")
             self.song.pause()
+
+    def at_index(self, index: int):
+        if self.song is not None:
+            self.song.stop()
+        song = self.playlist[index]
+        self._play_song(song)
 
     def next(self):
         if self.song is not None:
