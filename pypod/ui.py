@@ -1,4 +1,5 @@
 from rich.progress import Progress, Text, Task, TextColumn, BarColumn
+from textual import events
 from textual.app import ComposeResult
 from textual.widgets._header import HeaderTitle
 from textual.widgets import ListView, ListItem, Static, Label, DataTable
@@ -67,6 +68,10 @@ class PlaylistListView(Static):
                     Label(f"{duration}", classes="right"),
                 )
             )
+
+    def on_click(self, event: events.Click):
+        print("We are on click")
+        return super()._on_click(event)
 
     def set_index(self, highlight: int = 0):
         self._list.index = highlight

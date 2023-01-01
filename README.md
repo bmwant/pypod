@@ -5,6 +5,8 @@ Python console music player
 ```bash
 $ brew install portaudio
 $ poetry install
+
+$
 ```
 
 
