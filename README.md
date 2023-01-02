@@ -2,9 +2,10 @@
 
 Python console music player
 
+### Installation
+
 ```bash
-$ brew install portaudio
-$ poetry install --with dev
+$ pip install python-pod
 ```
 
 
@@ -12,4 +13,11 @@ $ poetry install --with dev
 ```bash
 $ pypod <path-to-directory>
 $ pypod filename.wav
+```
+
+### Development
+
+```bash
+$ brew install portaudio
+$ poetry install --with dev
 ```
