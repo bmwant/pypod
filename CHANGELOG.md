@@ -1,5 +1,10 @@
 <!--next-version-placeholder-->
 
+## v0.1.1 (2023-01-02)
+### Fix
+* Remove duplicate key in toml config :clock6: ([`520d2ea`](https://github.com/bmwant/pypod/commit/520d2ea05fc346c6a59d4453fdc2ed838dd84fb7))
+* Add package build command with Poetry :alarm_clock: ([`dbc9be8`](https://github.com/bmwant/pypod/commit/dbc9be8574af1c862989069ad1ab0c98f9a48ad6))
+
 ## v0.1.0 (2023-01-02)
 ### Feature
 * Add ability to play song from playlist on select :cn: ([`7c5e6fd`](https://github.com/bmwant/pypod/commit/7c5e6fd2fcc79ab138f5aa0b12af110e87482e56))

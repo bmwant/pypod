@@ -3,7 +3,7 @@ name = "python-pod"
 packages = [
   { include = "pypod" }
 ]
-version = "0.1.0"
+version = "0.1.1"
 description = "Python terminal music player"
 authors = ["Misha Behersky <bmwant@gmail.com>"]
 license = "MIT"
