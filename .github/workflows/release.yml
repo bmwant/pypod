@@ -1,0 +1,49 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+
+env:
+  POETRY_VERSION: "1.2.1"
+  GIT_COMMITTER_NAME: "github-actions"
+  GIT_COMMITTER_EMAIL: "github-actions@github.com"
+
+jobs:
+  create-release:
+    name: Create a new release
+    runs-on: ubuntu-latest
+    concurrency: create-release
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      # NOTE: this is required for the python semantic release to work
+      with:
+        fetch-depth: 0
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: ${{ env.POETRY_VERSION }}
+
+    - name: Configure dependencies
+      run: |
+        poetry install --only dev
+        git config --global user.name "$GIT_COMMITTER_NAME"
+        git config --global user.email "$GIT_COMMITTER_EMAIL"
+
+    - name: Publish release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        poetry run semantic-release publish \
+          -D commit_author="$GIT_COMMITTER_NAME <$GIT_COMMITTER_EMAIL>" \
+
+    - name: Upload package to PyPI
+      env:
+        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      run: |
+        poetry config pypi-token.pypi ${PYPI_TOKEN}
+        # remove_dist should be false
+        # otherwise use --build flag
+        poetry publish
