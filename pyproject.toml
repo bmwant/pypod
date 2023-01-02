@@ -23,7 +23,6 @@ pypod = 'pypod.cli:cli'
 version_toml = "pyproject.toml:tool.poetry.version"
 branch = "main"
 upload_to_repository = false
-build_command = "poetry build"
 dist_path = "dist/"
 upload_to_release = true  # upload distribution to GH releases
 build_command = "poetry build"
