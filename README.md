@@ -10,7 +10,7 @@
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 
-![screenshot](./assets/player_ui.png)
+![screenshot](https://github.com/bmwant/pypod/blob/main/assets/player_ui.png)
 
 
 Python console music player
@@ -23,8 +23,8 @@ $ pip install python-pod
 
 ### Usage
 ```bash
-$ pypod <path-to-directory>
-$ pypod filename.wav
+$ pypod <path-to-directory>  # play everything under the folder
+$ pypod filename.wav  # play single file
 ```
 
 ### Development
@@ -32,4 +32,7 @@ $ pypod filename.wav
 ```bash
 $ brew install portaudio
 $ poetry install --with dev
+
+$ make debug  # run app in debug mode
+$ make console  # run textual dev console
 ```
