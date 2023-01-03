@@ -1,11 +1,8 @@
-from typing import Optional
-
 import click
 from rich.console import Console
 
-from pypod import config
-from pypod.player import Pod
 from pypod.app import PyPodApp
+from pypod.player import Pod
 
 console = Console(highlight=False)
 
@@ -19,7 +16,7 @@ def cli(filepath):
     player.load(playlist)
     app = PyPodApp(player=player)
     app.run()
-    
+
 
 if __name__ == "__main__":
     cli()

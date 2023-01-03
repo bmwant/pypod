@@ -1,17 +1,12 @@
 from textual.app import App, ComposeResult
 from textual.containers import Container
+from textual.reactive import reactive
 from textual.widgets import Footer, Label
 from textual.widgets._header import HeaderTitle
-from textual.reactive import reactive
 
 from pypod import config
-from pypod.ui import (
-    ProgressDisplay,
-    PlaylistListView,
-    Controls,
-    Header,
-)
 from pypod.player import Pod
+from pypod.ui import Controls, Header, PlaylistListView, ProgressDisplay
 
 
 class PyPodApp(App):

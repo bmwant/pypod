@@ -1,6 +1,6 @@
-from threading import Thread, Event
-from typing import Optional
 from pathlib import Path
+from threading import Event, Thread
+from typing import Optional
 
 from pypod.song import Song, WAVSong
 
@@ -56,7 +56,7 @@ class Playlist:
 class Pod:
     def __init__(self):
         self._current: Song = None
-        self._thread: Thread= None
+        self._thread: Thread = None
         self.playlist: Playlist = None
         self.auto_finish: Event = Event()
 
@@ -80,7 +80,9 @@ class Pod:
 
     def play_playlist(self):
         for song in self.playlist:
-            t = Thread(target=song.play,)
+            t = Thread(
+                target=song.play,
+            )
             self._current = song
             t.start()
             break
@@ -160,6 +162,7 @@ class Pod:
 
 def play_directory():
     from pypod import config
+
     player = Pod()
     playlist = player.generate_playlist(config.ASSETS_DIR)
     player.load(playlist)

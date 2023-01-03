@@ -19,3 +19,23 @@ dist:
 .PHONY: publish
 publish:
 	@poetry publish
+
+.PHONY: isort
+isort:
+	@poetry run isort .
+
+.PHONY: black
+black:
+	@poetry run black .
+
+.PHONY: lint
+lint:
+	@poetry run flake8 .
+
+.PHONY: changelog
+changelog:
+	@poetry run semantic-release changelog --unreleased
+
+.PHONY: print-next-version
+print-next-version:
+	@poetry run semantic-release print-version --next

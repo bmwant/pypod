@@ -1,14 +1,14 @@
 import time
-from datetime import timedelta
 
-from rich.progress import Progress, Text, Task, TextColumn, BarColumn
+from rich.progress import BarColumn, Progress, Task, Text, TextColumn
 from textual import events
 from textual.app import ComposeResult
-from textual.widgets._header import HeaderTitle
-from textual.widgets import ListItem as ListItem_
-from textual.widgets import ListView, Static, Label, DataTable
+from textual.widgets import Button, DataTable
 from textual.widgets import Header as Header_
-from textual.widgets import Button, Static
+from textual.widgets import Label
+from textual.widgets import ListItem as ListItem_
+from textual.widgets import ListView, Static
+from textual.widgets._header import HeaderTitle
 
 from pypod.song import Song
 from pypod.utils import sec_to_time
@@ -87,16 +87,13 @@ class PlaylistListView(Static):
         self._list = ListView()
         # self._list.on_event = self._on_list_events
 
-    def on_list_view_selected(
-        self, event: ListView.Selected
-    ) -> None:
+    def on_list_view_selected(self, event: ListView.Selected) -> None:
         index = self._list.index
         print("Selected index is", index)
         self.app.play_index(index)
         # event.stop()
 
     async def _on_list_events(self, event: events.Event):
-        double_click = getattr(self._list.highlighted_child, "double_click", None)
         print("Event type", type(event), dir(event))
         if isinstance(event, ListView.Selected):
             index = self._list.index
@@ -218,6 +215,3 @@ class ProgressDisplay(Static):
         if self.timer is not None:
             self.timer.stop_no_wait()
             self._timers.discard(self.timer)
-
-
-

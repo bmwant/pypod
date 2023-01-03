@@ -1,6 +1,6 @@
+import contextlib
 import time
 import wave as pywave
-import contextlib
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -52,9 +52,7 @@ class WAVSong(Song):
 
     def play(self):
         with pywave.open(str(self.filepath), "rb") as wave:
-            format = self.py_audio.get_format_from_width(
-                wave.getsampwidth()
-            )
+            format = self.py_audio.get_format_from_width(wave.getsampwidth())
             stream = self.py_audio.open(
                 format=format,
                 channels=wave.getnchannels(),
@@ -94,6 +92,7 @@ class WAVSong(Song):
 
 if __name__ == "__main__":
     from pypod import config
+
     filepath = config.ASSETS_DIR / "rain_and_storm.wav"
     s1 = WAVSong(filepath=filepath)
     s1.play()
