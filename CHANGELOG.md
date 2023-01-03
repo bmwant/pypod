@@ -1,5 +1,13 @@
 <!--next-version-placeholder-->
 
+## v0.1.2 (2023-01-03)
+### Fix
+* Remove print journalling :u7533: ([`6bc75a9`](https://github.com/bmwant/pypod/commit/6bc75a9d9259c59d8491e0d68eac72dea19c7b07))
+
+### Documentation
+* Update dev section :astonished: ([`35c435f`](https://github.com/bmwant/pypod/commit/35c435f704f187b90f5264be4b476f04a535eaeb))
+* Add ui screenshot :notebook: ([`877ec99`](https://github.com/bmwant/pypod/commit/877ec998dc7b0b0041ebcf25e7e96726a94490a5))
+
 ## v0.1.1 (2023-01-02)
 ### Fix
 * Remove duplicate key in toml config :clock6: ([`520d2ea`](https://github.com/bmwant/pypod/commit/520d2ea05fc346c6a59d4453fdc2ed838dd84fb7))
