@@ -83,7 +83,6 @@ class PyPodApp(App):
 
     def play_index(self, index: int):
         progress: ProgressDisplay = self.query_one("#prog")
-        print(f"Want to play {index}")
         self.player.at_index(index)
         self.query_one("#play").label = "▮▮"
         self.song_title = self.player.song.name
