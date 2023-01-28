@@ -10,7 +10,9 @@ def main():
     filepath = config.ASSETS_DIR / "rain_and_storm.wav"
     s1 = WAVSong(filepath=filepath)
 
-    t = Thread(target=s1.play,)
+    t = Thread(
+        target=s1.play,
+    )
     t.start()
     time.sleep(2)
     s1.paused = True
