@@ -1,0 +1,42 @@
+name: Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: ${{ env.POETRY_VERSION }}
+
+      - name: Set up Python ${{ env.POETRY_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.POETRY_VERSION }}
+          cache: "poetry"
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Run checks
+        run: |
+          echo "Checking imports order"
+          poetry run isort . --check-only
+          echo "Checking black codestyle"
+          poetry run black . --check
+          echo "Linting code"
+          poetry run flake8 . --count
